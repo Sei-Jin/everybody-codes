@@ -12,6 +12,7 @@ public class Day01 {
     
     private static final String PART_ONE_FILENAME = "input/day01_p1.txt";
     private static final String PART_TWO_FILENAME = "input/day01_p2.txt";
+    private static final String PART_THREE_FILENAME = "input/day01_p3.txt";
     
     private static List<Creature> parseCreatures(String filename) {
         final var list = new ArrayList<Creature>();
@@ -34,34 +35,32 @@ public class Day01 {
         }
     }
     
-    private static int solvePartOne(List<Creature> creatures) {
-        return creatures
-            .stream()
-            .mapToInt(creature -> creature.potionsRequired)
-            .sum();
-    }
-    
-    private static int solvePartTwo(List<Creature> creatures) {
-        var potions = 0;
+    private static int solve(List<Creature> creatures, int maxGroupSize) {
+        var totalPotions = 0;
         
-        for (int i = 0; i < creatures.size(); i += 2) {
-            var potionPair = 0;
+        for (int i = 0; i < creatures.size(); i += maxGroupSize) {
+            var groupPotions = 0;
             
-            final var first = creatures.get(i);
-            final var second = creatures.get(i + 1);
+            final var groupCreatures = new ArrayList<Creature>();
             
-            if (first != Creature.EMPTY && second != Creature.EMPTY) {
-                potionPair += 1;
-                potionPair += 1;
+            for (int j = 0; j < maxGroupSize; j++) {
+                final var creature = creatures.get(i + j);
+                
+                if (creature != Creature.EMPTY) {
+                    groupCreatures.add(creature);
+                }
             }
             
-            potionPair += first.potionsRequired;
-            potionPair += second.potionsRequired;
+            final var bonus = groupCreatures.size() - 1;
             
-            potions += potionPair;
+            for (final var creature : groupCreatures) {
+                groupPotions += creature.potionsRequired + bonus;
+            }
+            
+            totalPotions += groupPotions;
         }
         
-        return potions;
+        return totalPotions;
     }
     
     private enum Creature {
@@ -94,10 +93,12 @@ public class Day01 {
     }
     
     public static void main(String[] args) {
-        final var partOne = solvePartOne(parseCreatures(PART_ONE_FILENAME));
-        final var partTwo = solvePartTwo(parseCreatures(PART_TWO_FILENAME));
+        final var partOne = solve(parseCreatures(PART_ONE_FILENAME), 1);
+        final var partTwo = solve(parseCreatures(PART_TWO_FILENAME), 2);
+        final var partThree = solve(parseCreatures(PART_THREE_FILENAME), 3);
         
         System.out.println(partOne);
         System.out.println(partTwo);
+        System.out.println(partThree);
     }
 }
