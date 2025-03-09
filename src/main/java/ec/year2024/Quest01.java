@@ -1,22 +1,17 @@
-package year2024;
+package ec.year2024;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import ec.Main;
+import ec.Solver;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Day01 {
+public class Quest01 implements Solver {
     
-    private static final String PART_ONE_FILENAME = "input/day01_p1.txt";
-    private static final String PART_TWO_FILENAME = "input/day01_p2.txt";
-    private static final String PART_THREE_FILENAME = "input/day01_p3.txt";
-    
-    private static List<Creature> parseCreatures(String filename) {
+    private static List<Creature> parseCreatures(String input) {
         final var list = new ArrayList<Creature>();
-        final var input = parseInput(filename);
         
         for (int i = 0; i < input.length(); i++) {
             final var character = input.charAt(i);
@@ -25,14 +20,6 @@ public class Day01 {
         }
         
         return list;
-    }
-    
-    private static String parseInput(String filename) {
-        try {
-            return Files.readString(Path.of(filename));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
     
     private static int solve(List<Creature> creatures, int maxGroupSize) {
@@ -61,6 +48,24 @@ public class Day01 {
         }
         
         return totalPotions;
+    }
+    
+    @Override
+    public Integer solvePart1(String input) {
+        final var creatures = parseCreatures(input);
+        return solve(creatures, 1);
+    }
+    
+    @Override
+    public Integer solvePart2(String input) {
+        final var creatures = parseCreatures(input);
+        return solve(creatures, 2);
+    }
+    
+    @Override
+    public Integer solvePart3(String input) {
+        final var creatures = parseCreatures(input);
+        return solve(creatures, 3);
     }
     
     private enum Creature {
@@ -93,12 +98,6 @@ public class Day01 {
     }
     
     public static void main(String[] args) {
-        final var partOne = solve(parseCreatures(PART_ONE_FILENAME), 1);
-        final var partTwo = solve(parseCreatures(PART_TWO_FILENAME), 2);
-        final var partThree = solve(parseCreatures(PART_THREE_FILENAME), 3);
-        
-        System.out.println(partOne);
-        System.out.println(partTwo);
-        System.out.println(partThree);
+        Main.runAndPrint(1);
     }
 }
